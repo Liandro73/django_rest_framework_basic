@@ -17,3 +17,12 @@ def create_user(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_user(request, pk):
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
