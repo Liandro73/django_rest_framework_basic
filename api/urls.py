@@ -5,4 +5,5 @@ urlpatterns = [
     path('users/', get_users, name='get_users'),
     path('users/create/', create_user, name='create_user'),
     path('user/<int:pk>', manipulate_user, name='manipulate_user'),
+
 ]
