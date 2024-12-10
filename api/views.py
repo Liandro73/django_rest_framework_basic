@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,6 +10,12 @@ def get_users(request):
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def get_users_by_search(request, search):
+    transactions = User.objects.filter( Q(id__icontains=search) | Q(name__icontains=search) | Q(age__icontains=search) )
+    transactions_serializer = UserSerializer(transactions, many=True)
+    return Response(transactions_serializer.data)
 
 @api_view(['POST'])
 def create_user(request):
