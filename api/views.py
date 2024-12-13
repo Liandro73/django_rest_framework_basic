@@ -2,13 +2,14 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User
-from .serializer import UserSerializer
+from .models import User, Address
+from .serializer import UserSerializer, UserFullySerializer, AddressSerializer
+
 
 @api_view(['GET'])
 def get_users(request):
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
+    users = User.objects.select_related()
+    serializer = UserFullySerializer(users, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -46,3 +47,17 @@ def manipulate_user(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def get_addresses(request):
+    address = Address.objects.all()
+    serializer = AddressSerializer(address, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def create_address(request):
+    addresses_serializer = AddressSerializer(data=request.data)
+    if addresses_serializer.is_valid():
+        addresses_serializer.save()
+        return Response(addresses_serializer.data, status=status.HTTP_201_CREATED)
+    return Response(addresses_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
