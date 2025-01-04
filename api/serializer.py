@@ -7,6 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class AddressSerializer(serializers.ModelSerializer):
+    address_line_two = serializers.CharField(required=False, default='')
     class Meta:
         model = Address
         fields = "__all__"
